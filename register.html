@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #efe6fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="tel"], input[type="password"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Create your Music Diary!</div>
+        <h1>Sign Up</h1>
+        <form id="signupForm">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="password" id="password" placeholder="Your Password" required>
+            <input type="tel" id="phone" placeholder="Your Phone Number" required>
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value;
+
+            // 새로운 사용자 정보를 생성합니다.
+            const newUser = { name: name, phone: phone, password: password, diaries: [] };
+
+            // 기존 사용자 목록을 불러옵니다.
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // 새로운 사용자를 추가합니다.
+            users.push(newUser);
+
+            // 사용자 목록을 localStorage에 저장합니다.
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // 회원가입 후 로그인 페이지로 리다이렉트합니다.
+            window.location.href = 'diaryLogin.html';
+        });
+    </script>
+</body>
+</html>

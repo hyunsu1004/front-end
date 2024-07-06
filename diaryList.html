@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #efe6fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #diaryForm {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #diaryForm input[type="text"],
+        #diaryForm input[type="date"],
+        #diaryForm button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        #diaryForm input[type="text"],
+        #diaryForm input[type="date"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        #diaryForm button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #diaryForm button:hover {
+            background-color: #45a049;
+        }
+
+        .diary-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .diary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .diary-item span {
+            cursor: pointer;
+            color: #333;
+            flex: 1;
+        }
+
+        .diary-item button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .diary-item button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Diary List</h1>
+        <form id="diaryForm">
+            <input type="text" id="diaryTitleInput" placeholder="Diary Title" required>
+            <input type="date" id="diaryDateInput" required>
+            <button type="submit">Add Diary</button>
+        </form>
+        <ul id="diaryList" class="diary-list"></ul>
+    </div>
+
+    <script>
+        // 현재 로그인한 사용자 정보를 가져옵니다.
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        // 해당 사용자의 diaries를 가져옵니다.
+        let diaries = currentUser.diaries || [];
+
+        // 일기 리스트를 화면에 표시합니다.
+        const diaryList = document.getElementById('diaryList');
+
+        function renderDiaries() {
+            diaryList.innerHTML = '';
+            diaries.forEach((diary, index) => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('diary-item');
+                listItem.innerHTML = `
+                    <span class="diary-title" data-index="${index}">${diary.title} - ${diary.date}</span>
+                    <button onclick="deleteDiary(${index})">Delete</button>
+                `;
+                diaryList.appendChild(listItem);
+            });
+
+            // 각 일기 제목을 클릭했을 때 writeDiary.html 페이지로 이동할 수 있도록 이벤트 리스너 추가
+            const diaryTitles = document.querySelectorAll('.diary-title');
+            diaryTitles.forEach(title => {
+                title.addEventListener('click', () => {
+                    const index = title.getAttribute('data-index');
+                    // 선택한 일기의 내용을 localStorage에 저장하여 writeDiary.html로 전달
+                    localStorage.setItem('currentDiaryIndex', index);
+                    window.location.href = 'writeDiary.html';
+                });
+            });
+        }
+
+        renderDiaries();
+
+        // 일기 추가 기능 구현
+        document.getElementById('diaryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('diaryTitleInput').value;
+            const date = document.getElementById('diaryDateInput').value;
+
+            // 새로운 일기 객체 생성
+            const newDiary = { title: title, date: date, content: '' };
+            diaries.push(newDiary);
+
+            // 사용자 정보 업데이트
+            currentUser.diaries = diaries;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // 다시 렌더링
+            renderDiaries();
+
+            // 폼 초기화
+            document.getElementById('diaryTitleInput').value = '';
+            document.getElementById('diaryDateInput').value = '';
+        });
+
+        // 일기 삭제 기능 구현
+        function deleteDiary(index) {
+            diaries.splice(index, 1);
+
+            // 사용자 정보 업데이트
+            currentUser.diaries = diaries;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // 다시 렌더링
+            renderDiaries();
+        }
+    </script>
+</body>
+
+</html>

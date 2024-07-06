@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Diary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:  #efe6fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Write Diary</h1>
+        <textarea id="diaryContent" placeholder="Write your diary here..."></textarea>
+        <button onclick="saveDiary()">Save Diary</button>
+        <button onclick="goBack()">Back to List</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 현재 선택한 일기의 인덱스를 가져옵니다.
+            const index = localStorage.getItem('currentDiaryIndex');
+
+            // 현재 로그인한 사용자 정보를 가져옵니다.
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            // 선택한 일기의 내용을 textarea에 불러옵니다.
+            const selectedDiary = currentUser.diaries[index];
+            document.getElementById('diaryContent').value = selectedDiary.content;
+        });
+
+        function saveDiary() {
+            // 현재 선택한 일기의 인덱스를 가져옵니다.
+            const index = localStorage.getItem('currentDiaryIndex');
+
+            // 현재 로그인한 사용자 정보를 가져옵니다.
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            // textarea의 내용을 선택한 일기의 content에 저장합니다.
+            currentUser.diaries[index].content = document.getElementById('diaryContent').value;
+
+            // 사용자 정보를 localStorage에 업데이트합니다.
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // 알림을 통해 저장 성공 메시지를 보여줍니다.
+            alert('Diary saved successfully!');
+        }
+
+        function goBack() {
+            // diaryList.html 페이지로 이동합니다.
+            window.location.href = 'diaryList.html';
+        }
+    </script>
+</body>
+
+</html>
